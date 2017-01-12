@@ -1,0 +1,22 @@
+8.0.0	2016-06-24
+	* Supported latest IP2Location-C.
+	
+7.0.1	2015-05-12
+	* fixes to be able to compile mod_ip2location.c with Apache 2.4 includes
+	
+7.0.0	2014-08-29
+	* Added supports to IP2Location-C 7.0.0 with IPv6
+
+5.1.0	2014-07-14
+	* Added supports to proxy header
+
+5.0.0	2013-04-16
+	* Support IP2Location DB21 - DB24
+
+4.0.0	2010-08-12
+	* Support IP2Location DB19 - DB20
+
+3.0.0	2008-08-12
+	* Initial release
+	* Support IP2Location IPv6
+	* Support IP2Location DB1 - DB18

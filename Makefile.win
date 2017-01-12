@@ -1,0 +1,25 @@
+# -------------------------------------------------------------
+IP2LOCATION_CSRC_PATH = ../C-IP2Location-4.0.0/libIP2Location
+IP2LOCATION_CLIB_PATH = ../C-IP2Location-4.0.0/libIP2Location
+APACHE_INSTALL_PATH   = "C:/Program Files/Apache Group/Apache2"
+# -------------------------------------------------------------
+
+TARGET_LIB = IP2Location_apache.dll
+C_COMPILE = cl
+C_LIBTOOL = lib
+C_LINKER = link
+CCFLAGS = /nologo /D WIN32 /c /ML 
+CLFLAGS = /DLL /nologo /NODEFAULTLIB:LIBCD /SUBSYSTEM:CONSOLE 
+HEADER_INCLUDE = /I$(IP2LOCATION_CSRC_PATH) /I$(APACHE_INSTALL_PATH)/include
+LIB_INCLUDE = /LIBPATH:$(IP2LOCATION_CSRC_PATH) /LIBPATH:$(APACHE_INSTALL_PATH)/lib
+IP2LOCATION_SOURCE = mod_ip2location.c 
+
+.SUFFIXES: .obj .c
+
+all: $(TARGET_LIB) $(TARGET_TEST)
+
+.c.obj: 
+	$(C_COMPILE) $(CCFLAGS) $(HEADER_INCLUDE) /Fo$@ /TC $< 
+	
+$(TARGET_LIB): $(IP2LOCATION_SOURCE:.c=.obj)
+	$(C_LINKER) $(CLFLAGS) /OUT:$@ /nologo  $(LIB_INCLUDE) libhttpd.lib libapr.lib IP2Location.lib Ws2_32.lib User32.lib $(IP2LOCATION_SOURCE:.c=.obj)
