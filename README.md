@@ -8,10 +8,10 @@ from **IP2Location BIN data** file.
 Supported IPv4 and IPv6 address.
 
 For more details, please visit:
-[http://www.ip2location.com/developers/apache](http://www.ip2location.com/developers/apache)
+[https://www.ip2location.com/developers/apache](https://www.ip2location.com/developers/apache)
 
 # Requirements
-1. IP2Location C API library ( download from http://www.ip2location.com/developers/c )
+1. IP2Location C API library ( download from https://www.ip2location.com/developers/c )
 2. Apache 2.0x
 3. GNU make or any compatible make utility
 
@@ -65,8 +65,8 @@ from internet browser, load mod_ip2location_test.php
 
 
 # Sample BIN Databases
-* Download free IP2Location LITE databases at [http://lite.ip2location.com](http://lite.ip2location.com)  
-* Download IP2Location sample databases at [http://www.ip2location.com/developers](http://www.ip2location.com/developers)
+* Download free IP2Location LITE databases at [https://lite.ip2location.com](https://lite.ip2location.com)  
+* Download IP2Location sample databases at [https://www.ip2location.com/developers](https://www.ip2location.com/developers)
 
 # IPv4 BIN vs IPv6 BIN
 * Use the IPv4 BIN file if you just need to query IPv4 addresses.
@@ -74,4 +74,4 @@ from internet browser, load mod_ip2location_test.php
 
 # Support
 Email: support@ip2location.com.  
-URL: [http://www.ip2location.com](http://www.ip2location.com)
+URL: [https://www.ip2location.com](https://www.ip2location.com)
