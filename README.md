@@ -52,6 +52,14 @@ e.g. `APACHE_INSTALL_PATH   = "C:/Program Files/Apache Group/Apache2"`
 
 2. restart Apache server to take effect of the changes
 
+**Notes**
+If you are getting startup errors where Apache cannot locate the module files, please set your environment path as below:
+
+```
+$ LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/lib/apache2/modules/
+$ export LD_LIBRARY_PATH
+```
+
 # Testing
 ### PHP Testing
 from internet browser, load mod_ip2location_test.php
