@@ -1,4 +1,4 @@
-# IP2Location Apache Module 8.0.0
+# IP2Location Apache Module
 
 This is a IP2Location Apache Module that enables the user to find the country, region, city, latitude, longitude, 
 zip code, time zone, ISP, domain name, connection type, area code, weather, mobile network, elevation, 
@@ -17,40 +17,64 @@ For more details, please visit:
 
 # Installation
 ### Linux Build
-Depending on installed Apache devel, APXS is either as "apxs" or "apxs2" available
+Depending on  Apache devel package, APXS is either as **apxs** or **apxs2** available.
 
-1) apxs -i -a -L<path_to_ip2location_c_api_compiled_library> -I<path_to_ip2location_c_api_src> -lIP2Location -c mod_ip2location.c
-	e.g. apxs -i -a -L ../ip2location-c-8.0.0/libIP2Location/ -I ../ip2location-c-x.x.x/libIP2Location/ -l IP2Location -c mod_ip2location.c
+```bash
+apxs -i -a -L ../ip2location-c_x.y.z/libIP2Location/ -I ../ip2location-c-x.y.z/libIP2Location/ -l IP2Location -c mod_ip2location.c
+```
+
+
 
 ### Windows Build
-1. open Makefile.win and configure macros as below:  
-   `IP2LOCATION_CSRC_PATH = <path_to_ip2location_c_api_src>`  
-   e.g. `IP2LOCATION_CSRC_PATH = ../C-IP2Location-x.x.x/libIP2Location`  
+1. open Makefile.win and configure macros as below:    
 
-`IP2LOCATION_CLIB_PATH = <path_to_ip2location_c_api_compiled_library>`  
-e.g. `IP2LOCATION_CLIB_PATH = ../C-IP2Location-x.x.x/libIP2Location`  
+   ```
+   IP2LOCATION_CSRC_PATH = ../ip2location-c_x.y.z/libIP2Location
+   IP2LOCATION_CLIB_PATH = ../ip2;ocation-c_x.x.x/libIP2Location
+   APACHE_INSTALL_PATH   = PATH_TO_APACHE_INSTALLATION_FOLDER
+   ```
 
-`APACHE_INSTALL_PATH   = <path_to_apache_installation>`  
-e.g. `APACHE_INSTALL_PATH   = "C:/Program Files/Apache Group/Apache2"`  
+2. Compile with Nmake.
 
-1. nmake /f Makefile.win
-2. copy the resulting IP2Location_apache.dll to Apache modules path
+   ```
+   nmake /f Makefile.win
+   ```
+
+3. Copy the **IP2Location_apache.dll** generated to Apache modules folder.
+
+   
 
 # Apache Configuration
-1. load the compiled IP2Location module by adding these lines in httpd.conf  
+1. To load IP2Location module in Apache,  add the following lines in httpd.conf.
 
-    `LoadModule IP2Location_module <compiled_ip2location_dll_file_with_fully_qualified_path>`  
-    `<IfModule mod_ip2location.c>`  
-    `IP2LocationEnable <On|Off>`  
-    `# ENV will set server variables`  
-    `# NOTES will set apache notes`  
-    `# ALL will set both`  
-    `IP2LocationSetmode <ALL|ENV|NOTES>`  
-    `IP2LocationDBFile <ip2location_binary_db_file_with_fully_qualified_path>`  
-    `IP2LocationDetectProxy <On|Off>`  
-    `</IfModule>`  
+    ```
+    LoadModule IP2Location_module FULL_PATH_TO_IP2LOCATION_MODULE
+    
+    <IfModule mod_ip2location.c>
+    IP2LocationEnable On 
+    # ENV will set server variables
+    # NOTES will set apache notes 
+    # ALL will set both
+    IP2LocationSetmode ALL
+    IP2LocationDBFile PATH_TO_IP2LOCATION_BIN_DATABASE
+    IP2LocationDetectProxy On
+    </IfModule>
+    ```
 
-2. restart Apache server to take effect of the changes
+    
+
+    Reference:
+
+    | Name                   | Value           | Description                                                  |
+    | ---------------------- | --------------- | ------------------------------------------------------------ |
+    | IP2LocationEnable      | On\|Off         | Enable or disable IP2Location module.                        |
+    | IP2LocationSetmode     | ENV\|NOTES\|ALL | Choose where to display the geolocation variables. ENV = Server variables, NOTES = Apache notes, ALL = Both |
+    | IP2LocationDBFile      | Path            | The full path to a IP2Location BIN database                  |
+    | IP2LocationDetectProxy | On\|Off         | If you website is hosted behind a reverse proxy server, turn this on to detect the correct IP address |
+
+    
+
+2. Restart Apache server to take effect of the changes
 
 **Notes**
 If you are getting startup errors where Apache cannot locate the module files, please set your environment path as below:
@@ -62,14 +86,18 @@ $ export LD_LIBRARY_PATH
 
 # Testing
 ### PHP Testing
-from internet browser, load mod_ip2location_test.php
+From internet browser, load mod_ip2location_test.php
 
 ### Apache Rewrite Testing
-1. add below lines to Apache configuration file httpd.conf:
-    `RewriteEngine On`  
-    `RewriteCond %{ENV:IP2LOCATION_COUNTRY_SHORT} ^UK$`  
-    `RewriteRule ^(.*)$ http://www.google.co.uk [L]`  
-2. this will redirect all ip address from United Kingdom to http://www.google.co.uk
+1. Add below lines to Apache configuration file httpd.conf:  
+    
+    ```
+    RewriteEngine On
+    RewriteCond %{ENV:IP2LOCATION_COUNTRY_SHORT} ^UK$
+    RewriteRule ^(.*)$ http://www.google.co.uk [L]
+    ```
+    
+2. This will redirect all IP address from United Kingdom to http://www.google.co.uk
 
 
 # Sample BIN Databases
