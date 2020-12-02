@@ -1,4 +1,4 @@
-/* Copyright (C) 2005-2014 IP2Location.com
+/* Copyright (C) 2005-2020 IP2Location.com
  * All Rights Reserved
  *
  * This library is free software: you can redistribute it and/or
@@ -23,7 +23,6 @@
 #include "apr_strings.h"
 #include "IP2Location.h"
 
-
 static const int ENV_SET_MODE    = 0x0001;
 static const int NOTES_SET_MODE  = 0x0002;
 static const int ALL_SET_MODE    = 0x0003;
@@ -38,16 +37,18 @@ typedef struct {
 
 module AP_MODULE_DECLARE_DATA IP2Location_module;
 
-static apr_status_t ip2location_cleanup(void *cfgdata) {
-   // cleanup code here, if needed
-   return APR_SUCCESS;
+static apr_status_t ip2location_cleanup(void *cfgdata)
+{
+	return APR_SUCCESS;
 }
 
-static void ip2location_child_init(apr_pool_t *p, server_rec *s) {
-   apr_pool_cleanup_register(p, NULL, ip2location_cleanup, ip2location_cleanup);
+static void ip2location_child_init(apr_pool_t *p, server_rec *s)
+{
+	apr_pool_cleanup_register(p, NULL, ip2location_cleanup, ip2location_cleanup);
 }
 
-static int ip2location_post_read_request(request_rec *r) {
+static int ip2location_post_read_request(request_rec *r)
+{
 	char* ipaddr;
 	ip2location_server_config* config;
 	IP2LocationRecord* record;
@@ -55,39 +56,33 @@ static int ip2location_post_read_request(request_rec *r) {
 	
 	config = (ip2location_server_config*) ap_get_module_config(r->server->module_config, &IP2Location_module);
 	
-	if(!config->enabled)
+	if (!config->enabled) {
 		return OK;
+	}
 
-	if(config->detectProxy){
-		if(apr_table_get(r->headers_in, "Client-IP")) {
+	if (config->detectProxy) {
+		if (apr_table_get(r->headers_in, "Client-IP")) {
 			ipaddr = (char *)apr_table_get(r->headers_in, "Client-IP");
-		}
-		else if(apr_table_get(r->headers_in, "X-Forwarded-For")) {
+		} else if (apr_table_get(r->headers_in, "X-Forwarded-For")) {
 			ipaddr = (char *)apr_table_get(r->headers_in, "X-Forwarded-For");
-		}
-		else if(apr_table_get(r->headers_in, "X-Forwarded-IP")) {
+		} else if (apr_table_get(r->headers_in, "X-Forwarded-IP")) {
 			ipaddr = (char *)apr_table_get(r->headers_in, "X-Forwarded-IP");
-		}
-		else if(apr_table_get(r->headers_in, "Forwarded-For")) {
+		} else if (apr_table_get(r->headers_in, "Forwarded-For")) {
 			ipaddr = (char *)apr_table_get(r->headers_in, "Forwarded-For");
-		}
-		else if(apr_table_get(r->headers_in, "X-Forwarded")) {
+		} else if (apr_table_get(r->headers_in, "X-Forwarded")) {
 			ipaddr = (char *)apr_table_get(r->headers_in, "X-Forwarded");
-		}
-		else if(apr_table_get(r->headers_in, "Via")) {
+		} else if (apr_table_get(r->headers_in, "Via")) {
 			ipaddr = (char *)apr_table_get(r->headers_in, "Via");
-		}
-		else {
+		} else {
 			#if (((AP_SERVER_MAJORVERSION_NUMBER == 2) && (AP_SERVER_MINORVERSION_NUMBER >= 4)) || (AP_SERVER_MAJORVERSION_NUMBER > 2))
-				ipaddr = r->connection->client_ip;
+				ipaddr = r->useragent_ip;
 			#else
 				ipaddr = r->connection->remote_ip;
 			#endif
 		}
-	}
-	else{
+	} else {
 		#if (((AP_SERVER_MAJORVERSION_NUMBER == 2) && (AP_SERVER_MINORVERSION_NUMBER >= 4)) || (AP_SERVER_MAJORVERSION_NUMBER > 2))
-			ipaddr = r->connection->client_ip;
+			ipaddr = r->useragent_ip;
 		#else	
 			ipaddr = r->connection->remote_ip;
 		#endif	
@@ -95,8 +90,9 @@ static int ip2location_post_read_request(request_rec *r) {
 
 	record = IP2Location_get_all(config->ip2locObj, ipaddr);
 
-	if(record) {
-		if(config->setMode & ENV_SET_MODE) {
+	if (record) {
+		if (config->setMode & ENV_SET_MODE) {
+			apr_table_set(r->subprocess_env, "IP2LOCATION_IP", ipaddr);
 			apr_table_set(r->subprocess_env, "IP2LOCATION_COUNTRY_SHORT", record->country_short); 
 			apr_table_set(r->subprocess_env, "IP2LOCATION_COUNTRY_LONG", record->country_long); 
 			apr_table_set(r->subprocess_env, "IP2LOCATION_REGION", record->region); 
@@ -121,7 +117,9 @@ static int ip2location_post_read_request(request_rec *r) {
 			apr_table_set(r->subprocess_env, "IP2LOCATION_ELEVATION", buff); 
 			apr_table_set(r->subprocess_env, "IP2LOCATION_USAGETYPE", record->usagetype);
 		}
-		if(config->setMode & NOTES_SET_MODE) {
+
+		if (config->setMode & NOTES_SET_MODE) {
+			apr_table_set(r->notes, "IP2LOCATION_IP", ipaddr);
 			apr_table_set(r->notes, "IP2LOCATION_COUNTRY_SHORT", record->country_short); 
 			apr_table_set(r->notes, "IP2LOCATION_COUNTRY_LONG", record->country_long); 
 			apr_table_set(r->notes, "IP2LOCATION_REGION", record->region); 
@@ -153,66 +151,76 @@ static int ip2location_post_read_request(request_rec *r) {
 	return OK;
 }
 
-static const char* set_ip2location_enable(cmd_parms *cmd, void *dummy, int arg) {
+static const char* set_ip2location_enable(cmd_parms *cmd, void *dummy, int arg)
+{
 	ip2location_server_config* config = (ip2location_server_config*) ap_get_module_config(cmd->server->module_config, &IP2Location_module);
 	
-	if(!config) 
+	if (!config) {
 		return NULL;
+	}
 	
 	config->enabled = arg;
 	
 	return NULL;
 }
 
-static const char* set_ip2location_dbfile(cmd_parms* cmd, void* dummy, const char* dbFile, int arg) {
-  ip2location_server_config* config = (ip2location_server_config*) ap_get_module_config(cmd->server->module_config, &IP2Location_module);
-	if(!config) 
+static const char* set_ip2location_dbfile(cmd_parms* cmd, void* dummy, const char* dbFile, int arg)
+{
+	ip2location_server_config* config = (ip2location_server_config*) ap_get_module_config(cmd->server->module_config, &IP2Location_module);
+	
+	if (!config) {
 		return NULL;
+	}
 		
 	config->dbFile = apr_pstrdup(cmd->pool, dbFile);
-	if(config->enabled) {
+	
+	if (config->enabled) {
 		config->ip2locObj = IP2Location_open(config->dbFile);	
 		
-		if(!config->ip2locObj)
+		if (!config->ip2locObj) {
 			return "Error opening dbFile!";
+		}
 	}
 
 	return NULL; 
 }
 
-static const char* set_ip2location_set_mode(cmd_parms* cmd, void* dummy, const char* mode, int arg) {
+static const char* set_ip2location_set_mode(cmd_parms* cmd, void* dummy, const char* mode, int arg)
+{
 	ip2location_server_config* config = (ip2location_server_config*) ap_get_module_config(cmd->server->module_config, &IP2Location_module);
 	
-	if(!config) 
+	if (!config) {
 		return NULL;
+	}
 	
-	if(strcmp(mode, "ALL") == 0) 	
+	if (strcmp(mode, "ALL") == 0) {
 		config->setMode = ALL_SET_MODE;
-
-	else if(strcmp(mode, "ENV") == 0) 	
+	} else if (strcmp(mode, "ENV") == 0) {
 		config->setMode = ENV_SET_MODE;
-
-	else if(strcmp(mode, "NOTES") == 0)
-		config->setMode = NOTES_SET_MODE; 	
-
-	else
+	} else if (strcmp(mode, "NOTES") == 0) {
+		config->setMode = NOTES_SET_MODE;
+	} else {
 		return "Invalid mode for IP2LocationSetMode";
-	
+	}
+
 	return NULL; 
 }
 
-static const char* set_ip2location_detect_proxy(cmd_parms *cmd, void *dummy, int arg) {
+static const char* set_ip2location_detect_proxy(cmd_parms *cmd, void *dummy, int arg)
+{
 	ip2location_server_config* config = (ip2location_server_config*) ap_get_module_config(cmd->server->module_config, &IP2Location_module);
 	
-	if(!config) 
+	if (!config) {
 		return NULL;
+	}
 	
 	config->detectProxy = arg;
 	
 	return NULL;
 }
 
-static void* ip2location_create_svr_conf(apr_pool_t* pool, server_rec* svr) {
+static void* ip2location_create_svr_conf(apr_pool_t* pool, server_rec* svr)
+{
 	ip2location_server_config* svr_cfg = apr_pcalloc(pool, sizeof(ip2location_server_config));
 	
 	svr_cfg->enabled = 0;
@@ -231,8 +239,12 @@ static const command_rec ip2location_cmds[] = {
 	{NULL} 
 };
 
-static void ip2location_register_hooks(apr_pool_t *p) {
-	ap_hook_post_read_request( ip2location_post_read_request, NULL, NULL, APR_HOOK_MIDDLE );
+static void ip2location_register_hooks(apr_pool_t *p)
+{
+	/* Attempt to load before the following mods */
+	static const char *const aszSucc[] = { "mod_setenvif.c", "mod_rewrite.c", NULL };
+
+	ap_hook_post_read_request( ip2location_post_read_request, NULL, aszSucc, APR_HOOK_MIDDLE );
 	ap_hook_child_init(        ip2location_child_init, NULL, NULL, APR_HOOK_MIDDLE );
 }
 
