@@ -1,4 +1,4 @@
-/* Copyright (C) 2005-2020 IP2Location.com
+/* Copyright (C) 2005-2021 IP2Location.com
  * All Rights Reserved
  *
  * This library is free software: you can redistribute it and/or
@@ -180,6 +180,8 @@ static const char* set_ip2location_dbfile(cmd_parms* cmd, void* dummy, const cha
 		if (!config->ip2locObj) {
 			return "Error opening dbFile!";
 		}
+
+		IP2Location_set_lookup_mode(config->ip2locObj, IP2LOCATION_CACHE_MEMORY)
 	}
 
 	return NULL; 
