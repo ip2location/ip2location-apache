@@ -11,40 +11,119 @@ For more details, please visit:
 [https://www.ip2location.com/developers/apache](https://www.ip2location.com/developers/apache)
 
 # Requirements
-1. IP2Location C API library ( download from https://www.ip2location.com/developers/c )
+1. IP2Location C API library (download from [https://github.com/chrislim2888/IP2Location-C-Library)
 2. Apache 2.0x
 3. GNU make or any compatible make utility
 
 # Installation
 ### Linux Build
-Depending on  Apache devel package, APXS is either as **apxs** or **apxs2** available.
+1. Create a new folder called ip2location.
 
-```bash
-apxs -i -a -L ../ip2location-c/libIP2Location/ -I ../ip2location-c/libIP2Location/ -l IP2Location -c mod_ip2location.c
-```
+2. Download IP2Location C library from [here](https://github.com/chrislim2888/IP2Location-C-Library/archive/master.zip) into the ip2location folder.
+
+3. Decompress C library.
+
+   ```
+   unzip master.zip
+   ```
+
+4. Get into working directory.
+
+   ```
+   cd IP2Location-C-Library-master
+   ```
+
+5. Start compilation.
+
+   ```
+   autoreconf -i -v --force
+   ./configure
+   make
+   make install
+   ```
+
+6. Download and decompress Apache module into the ip2location folder.
+
+7. Get into working directory.
+
+   ```
+   cd ip2location-apache-master
+   ```
+
+8. Start compilation.
+
+   ```
+   apxs2 -i -a -L ../IP2Location-C-Library-master/libIP2Location/ -I ../IP2Location-C-Library-master/libIP2Location/ -l IP2Location -c mod_ip2location.c
+   ```
+
+9. Add following lines into **/etc/apache2/apache2.conf**
+
+   ```
+   <IfModule mod_ip2location.c>
+   	IP2LocationEnable On
+   	IP2LocationDetectProxy <On|Off>
+   	IP2LocationSetmode <ALL>
+   	IP2LocationDBFile <ip2location_binary_db_file_with_fully_qualified_path>
+   </IfModule>
+   ```
 
 
 
 ### Windows Build
-1. open Makefile.win and configure macros as below:    
+
+1. Create a new folder called ip2location.
+
+2. Download IP2Location C library from [here](https://github.com/chrislim2888/IP2Location-C-Library/archive/master.zip) into the ip2location folder.
+
+3. Decompress C library using [7-zip](https://www.7-zip.org/) or other compression tools.
+
+4. Get into working directory.
 
    ```
-   IP2LOCATION_CSRC_PATH = ../ip2location-c/libIP2Location
-   IP2LOCATION_CLIB_PATH = ../ip2;ocation-c/libIP2Location
-   APACHE_INSTALL_PATH   = PATH_TO_APACHE_INSTALLATION_FOLDER
+   cd IP2Location-C-Library-master
    ```
 
-2. Compile with Nmake.
+5. Start compilation.
 
    ```
    nmake /f Makefile.win
    ```
 
-3. Copy the **IP2Location_apache.dll** generated to Apache modules folder.
+6. Download and decompress Apache module into the ip2location folder.
 
-   
+7. Navigate to ip2location-apache-master folder.
+
+8. Edit Makefile.win to change the path for C library.
+
+   ```
+   IP2LOCATION_CSRC_PATH = C:/ip2location/IP2Location-C-Library-master/libIP2Location
+   IP2LOCATION_CLIB_PATH = C:/ip2location/IP2Location-C-Library-master/libIP2Location
+   APACHE_INSTALL_PATH = "C:/Program Files/Apache Software Foundation/Apachex.x"
+   ```
+
+9. Start compilation.
+
+   ```
+   nmake /f Makefile.win
+   ```
+
+10. Copy IP2Location_apache.dll generated to the Apache modules directory.
+
+11. Add following lines into httpd.conf
+
+    ```
+    <IfModule mod_ip2location.c>
+    	IP2LocationEnable <ON|OFF>
+    	IP2LocationDetectProxy <ON|OFF>
+    	IP2LocationSetmode <ALL>
+    	IP2LocationDBFile <ip2location_binary_db_file_with_fully_qualified_path>
+    </IfModule>
+    ```
+
+
 
 # Apache Configuration
+
 1. To load IP2Location module in Apache,  add the following lines in httpd.conf.
 
     ```
