@@ -20,7 +20,7 @@ For more details, please visit:
 Depending on  Apache devel package, APXS is either as **apxs** or **apxs2** available.
 
 ```bash
-apxs -i -a -L ../ip2location-c_x.y.z/libIP2Location/ -I ../ip2location-c-x.y.z/libIP2Location/ -l IP2Location -c mod_ip2location.c
+apxs -i -a -L ../ip2location-c/libIP2Location/ -I ../ip2location-c/libIP2Location/ -l IP2Location -c mod_ip2location.c
 ```
 
 
@@ -29,8 +29,8 @@ apxs -i -a -L ../ip2location-c_x.y.z/libIP2Location/ -I ../ip2location-c-x.y.z/l
 1. open Makefile.win and configure macros as below:    
 
    ```
-   IP2LOCATION_CSRC_PATH = ../ip2location-c_x.y.z/libIP2Location
-   IP2LOCATION_CLIB_PATH = ../ip2;ocation-c_x.x.x/libIP2Location
+   IP2LOCATION_CSRC_PATH = ../ip2location-c/libIP2Location
+   IP2LOCATION_CLIB_PATH = ../ip2;ocation-c/libIP2Location
    APACHE_INSTALL_PATH   = PATH_TO_APACHE_INSTALLATION_FOLDER
    ```
 
@@ -90,7 +90,7 @@ From internet browser, load mod_ip2location_test.php
 
 ### Apache Rewrite Testing
 1. Add below lines to Apache configuration file httpd.conf:  
-    
+   
     ```
     RewriteEngine On
     RewriteCond %{ENV:IP2LOCATION_COUNTRY_SHORT} ^UK$

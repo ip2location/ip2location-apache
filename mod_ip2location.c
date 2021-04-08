@@ -181,7 +181,7 @@ static const char* set_ip2location_dbfile(cmd_parms* cmd, void* dummy, const cha
 			return "Error opening dbFile!";
 		}
 
-		IP2Location_set_lookup_mode(config->ip2locObj, IP2LOCATION_CACHE_MEMORY)
+		IP2Location_set_lookup_mode(config->ip2locObj, IP2LOCATION_CACHE_MEMORY);
 	}
 
 	return NULL; 
