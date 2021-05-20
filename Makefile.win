@@ -1,6 +1,6 @@
 # -------------------------------------------------------------
-IP2LOCATION_CSRC_PATH = ../C-IP2Location-4.0.0/libIP2Location
-IP2LOCATION_CLIB_PATH = ../C-IP2Location-4.0.0/libIP2Location
+IP2LOCATION_CSRC_PATH = ../IP2Location-C-Library-master/libIP2Location
+IP2LOCATION_CLIB_PATH = ../IP2Location-C-Library-master/libIP2Location
 APACHE_INSTALL_PATH   = "C:/Program Files/Apache Group/Apache2"
 # -------------------------------------------------------------
 

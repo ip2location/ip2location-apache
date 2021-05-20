@@ -116,6 +116,8 @@ static int ip2location_post_read_request(request_rec *r)
 			sprintf(buff, "%f", record->elevation);
 			apr_table_set(r->subprocess_env, "IP2LOCATION_ELEVATION", buff); 
 			apr_table_set(r->subprocess_env, "IP2LOCATION_USAGETYPE", record->usagetype);
+			apr_table_set(r->subprocess_env, "IP2LOCATION_ADDRESSTYPE", record->address_type);
+			apr_table_set(r->subprocess_env, "IP2LOCATION_CATEGORY", record->category);
 		}
 
 		if (config->setMode & NOTES_SET_MODE) {
@@ -143,6 +145,8 @@ static int ip2location_post_read_request(request_rec *r)
 			sprintf(buff, "%f", record->elevation);
 			apr_table_set(r->notes, "IP2LOCATION_ELEVATION", buff); 
 			apr_table_set(r->notes, "IP2LOCATION_USAGETYPE", record->usagetype);
+			apr_table_set(r->notes, "IP2LOCATION_ADDRESSTYPE", record->address_type);
+			apr_table_set(r->notes, "IP2LOCATION_CATEGORY", record->category);
 		}
 	
 		IP2Location_free_record(record);		
