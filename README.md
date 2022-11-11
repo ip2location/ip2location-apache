@@ -11,29 +11,34 @@ For more details, please visit:
 [https://www.ip2location.com/developers/apache](https://www.ip2location.com/developers/apache)
 
 # Requirements
-1. IP2Location C API library (download from [https://github.com/chrislim2888/IP2Location-C-Library)
+1. IP2Location C API library (download from https://github.com/chrislim2888/IP2Location-C-Library)
 2. Apache 2.0x
-3. GNU make or any compatible make utility
+3. GNU make or any compatible make utility.
 
 # Installation
-### Linux Build
+### Linux Build (Debian)
 1. Create a new folder called ip2location.
 
-2. Download IP2Location C library from [here](https://github.com/chrislim2888/IP2Location-C-Library/archive/master.zip) into the ip2location folder.
-
-3. Decompress C library.
-
+2. Install the development libraries in Debian.
    ```
-   unzip master.zip
+   apt install apache2-dev
    ```
 
-4. Get into working directory.
+3. Download IP2Location C library from [here](https://github.com/chrislim2888/IP2Location-C-Library/archive/master.zip) into the ip2location folder.
+
+4. Decompress C library.
+
+   ```
+   unzip master.zip && rm master.zip
+   ```
+
+5. Get into working directory.
 
    ```
    cd IP2Location-C-Library-master
    ```
 
-5. Start compilation.
+6. Compile and install IP2Location-C-Library.
 
    ```
    autoreconf -i -v --force
@@ -41,28 +46,41 @@ For more details, please visit:
    make
    make install
    ```
+   Note: You may need to run ```ldconfig``` to refresh the shared libraries, if needed.
 
-6. Download and decompress Apache module into the ip2location folder.
+7. Download [IP2Location Apache Module](https://github.com/ip2location/ip2location-apache/archive/refs/heads/master.zip) into the ip2location folder.
 
-7. Get into working directory.
+8. Decompress IP2Location Apache Module
+
+   ```
+   unzip master.zip && rm master.zip
+   ```
+
+9. Get into IP2Location Apache Module directory.
 
    ```
    cd ip2location-apache-master
    ```
 
-8. Start compilation.
+10. Compile the IP2Location Apache Module.
 
    ```
    apxs2 -i -a -L ../IP2Location-C-Library-master/libIP2Location/ -I ../IP2Location-C-Library-master/libIP2Location/ -l IP2Location -c mod_ip2location.c
    ```
 
-9. Add following lines into **/etc/apache2/apache2.conf**
+12. Run the below command and make sure you see **IP2Location_module (shared)** entry.
+
+   ```
+   apache2ctl -M
+   ```
+
+13. Add following lines into **/etc/apache2/apache2.conf**
 
    ```
    <IfModule mod_ip2location.c>
    	IP2LocationEnable On
    	IP2LocationDetectProxy <On|Off>
-   	IP2LocationSetmode <ALL>
+   	IP2LocationSetmode ALL
    	IP2LocationDBFile <ip2location_binary_db_file_with_fully_qualified_path>
    </IfModule>
    ```
@@ -115,7 +133,7 @@ For more details, please visit:
     <IfModule mod_ip2location.c>
     	IP2LocationEnable <ON|OFF>
     	IP2LocationDetectProxy <ON|OFF>
-    	IP2LocationSetmode <ALL>
+    	IP2LocationSetmode ALL
     	IP2LocationDBFile <ip2location_binary_db_file_with_fully_qualified_path>
     </IfModule>
     ```
@@ -168,15 +186,15 @@ $ export LD_LIBRARY_PATH
 From internet browser, load mod_ip2location_test.php
 
 ### Apache Rewrite Testing
-1. Add below lines to Apache configuration file httpd.conf:  
+1. Add below lines to your domain configuration file (apaches/sites-enabled) or .htaccess:  
    
     ```
     RewriteEngine On
-    RewriteCond %{ENV:IP2LOCATION_COUNTRY_SHORT} ^UK$
-    RewriteRule ^(.*)$ http://www.google.co.uk [L]
+    RewriteCond %{ENV:IP2LOCATION_COUNTRY_SHORT} ^US$
+    RewriteRule ^(.*)$ https://www.google.com [L]
     ```
     
-2. This will redirect all IP address from United Kingdom to http://www.google.co.uk
+2. This will redirect all IP address from United States to https://www.google.com
 
 
 # Sample BIN Databases
