@@ -118,6 +118,9 @@ static int ip2location_post_read_request(request_rec *r)
 			apr_table_set(r->subprocess_env, "IP2LOCATION_USAGETYPE", record->usagetype);
 			apr_table_set(r->subprocess_env, "IP2LOCATION_ADDRESSTYPE", record->address_type);
 			apr_table_set(r->subprocess_env, "IP2LOCATION_CATEGORY", record->category);
+			apr_table_set(r->subprocess_env, "IP2LOCATION_DISTRICT", record->district);
+			apr_table_set(r->subprocess_env, "IP2LOCATION_ASN", record->asn);
+			apr_table_set(r->subprocess_env, "IP2LOCATION_AS", record->as);
 		}
 
 		if (config->setMode & NOTES_SET_MODE) {
@@ -147,6 +150,9 @@ static int ip2location_post_read_request(request_rec *r)
 			apr_table_set(r->notes, "IP2LOCATION_USAGETYPE", record->usagetype);
 			apr_table_set(r->notes, "IP2LOCATION_ADDRESSTYPE", record->address_type);
 			apr_table_set(r->notes, "IP2LOCATION_CATEGORY", record->category);
+			apr_table_set(r->notes, "IP2LOCATION_DISTRICT", record->district);
+			apr_table_set(r->notes, "IP2LOCATION_ASN", record->asn);
+			apr_table_set(r->notes, "IP2LOCATION_AS", record->as);
 		}
 	
 		IP2Location_free_record(record);		

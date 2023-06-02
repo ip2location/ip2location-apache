@@ -38,6 +38,9 @@ echo 'server:' . $_SERVER['IP2LOCATION_ELEVATION'] . '<br />';
 echo 'server:' . $_SERVER['IP2LOCATION_USAGETYPE'] . '<br />';
 echo 'server:' . $_SERVER['IP2LOCATION_ADDRESSTYPE'] . '<br />';
 echo 'server:' . $_SERVER['IP2LOCATION_CATEGORY'] . '<br />';
+echo 'server:' . $_SERVER['IP2LOCATION_DISTRICT'] . '<br />';
+echo 'server:' . $_SERVER['IP2LOCATION_ASN'] . '<br />';
+echo 'server:' . $_SERVER['IP2LOCATION_AS'] . '<br />';
 
 echo 'apache notes:' . apache_note('IP2LOCATION_COUNTRY_SHORT') . '<br />';
 echo 'apache notes:' . apache_note('IP2LOCATION_COUNTRY_LONG') . '<br />';
@@ -61,3 +64,6 @@ echo 'apache notes:' . apache_note('IP2LOCATION_ELEVATION') . '<br />';
 echo 'apache notes:' . apache_note('IP2LOCATION_USAGETYPE') . '<br />';
 echo 'apache notes:' . apache_note('IP2LOCATION_ADDRESSTYPE') . '<br />';
 echo 'apache notes:' . apache_note('IP2LOCATION_CATEGORY') . '<br />';
+echo 'apache notes:' . apache_note('IP2LOCATION_DISTRICT') . '<br />';
+echo 'apache notes:' . apache_note('IP2LOCATION_ASN') . '<br />';
+echo 'apache notes:' . apache_note('IP2LOCATION_AS') . '<br />';
