@@ -17,7 +17,7 @@
 
 #include "httpd.h"
 #include "http_config.h"
-#include "http_protocol.h" 
+#include "http_protocol.h"
 #include "http_log.h"
 #include "ap_config.h"
 #include "apr_strings.h"
@@ -30,7 +30,7 @@ static const int ALL_SET_MODE    = 0x0003;
 typedef struct {
 	int enabled;
 	int detectProxy;
-	int setMode; 
+	int setMode;
 	char* dbFile;
 	IP2Location* ip2locObj;
 } ip2location_server_config;
@@ -53,9 +53,9 @@ static int ip2location_post_read_request(request_rec *r)
 	ip2location_server_config* config;
 	IP2LocationRecord* record;
 	char buff[20];
-	
+
 	config = (ip2location_server_config*) ap_get_module_config(r->server->module_config, &IP2Location_module);
-	
+
 	if (!config->enabled) {
 		return OK;
 	}
@@ -83,9 +83,9 @@ static int ip2location_post_read_request(request_rec *r)
 	} else {
 		#if (((AP_SERVER_MAJORVERSION_NUMBER == 2) && (AP_SERVER_MINORVERSION_NUMBER >= 4)) || (AP_SERVER_MAJORVERSION_NUMBER > 2))
 			ipaddr = r->useragent_ip;
-		#else	
+		#else
 			ipaddr = r->connection->remote_ip;
-		#endif	
+		#endif
 	}
 
 	record = IP2Location_get_all(config->ip2locObj, ipaddr);
@@ -93,18 +93,18 @@ static int ip2location_post_read_request(request_rec *r)
 	if (record) {
 		if (config->setMode & ENV_SET_MODE) {
 			apr_table_set(r->subprocess_env, "IP2LOCATION_IP", ipaddr);
-			apr_table_set(r->subprocess_env, "IP2LOCATION_COUNTRY_SHORT", record->country_short); 
-			apr_table_set(r->subprocess_env, "IP2LOCATION_COUNTRY_LONG", record->country_long); 
-			apr_table_set(r->subprocess_env, "IP2LOCATION_REGION", record->region); 
-			apr_table_set(r->subprocess_env, "IP2LOCATION_CITY", record->city); 
-			apr_table_set(r->subprocess_env, "IP2LOCATION_ISP", record->isp); 
+			apr_table_set(r->subprocess_env, "IP2LOCATION_COUNTRY_SHORT", record->country_short);
+			apr_table_set(r->subprocess_env, "IP2LOCATION_COUNTRY_LONG", record->country_long);
+			apr_table_set(r->subprocess_env, "IP2LOCATION_REGION", record->region);
+			apr_table_set(r->subprocess_env, "IP2LOCATION_CITY", record->city);
+			apr_table_set(r->subprocess_env, "IP2LOCATION_ISP", record->isp);
 			sprintf(buff, "%f", record->latitude);
-			apr_table_set(r->subprocess_env, "IP2LOCATION_LATITUDE", buff); 
+			apr_table_set(r->subprocess_env, "IP2LOCATION_LATITUDE", buff);
 			sprintf(buff, "%f", record->longitude);
-			apr_table_set(r->subprocess_env, "IP2LOCATION_LONGITUDE", buff); 
-			apr_table_set(r->subprocess_env, "IP2LOCATION_DOMAIN", record->domain); 
-			apr_table_set(r->subprocess_env, "IP2LOCATION_ZIPCODE", record->zipcode); 
-			apr_table_set(r->subprocess_env, "IP2LOCATION_TIMEZONE", record->timezone); 
+			apr_table_set(r->subprocess_env, "IP2LOCATION_LONGITUDE", buff);
+			apr_table_set(r->subprocess_env, "IP2LOCATION_DOMAIN", record->domain);
+			apr_table_set(r->subprocess_env, "IP2LOCATION_ZIPCODE", record->zipcode);
+			apr_table_set(r->subprocess_env, "IP2LOCATION_TIMEZONE", record->timezone);
 			apr_table_set(r->subprocess_env, "IP2LOCATION_NETSPEED", record->netspeed);
 			apr_table_set(r->subprocess_env, "IP2LOCATION_IDDCODE", record->iddcode);
 			apr_table_set(r->subprocess_env, "IP2LOCATION_AREACODE", record->areacode);
@@ -114,29 +114,32 @@ static int ip2location_post_read_request(request_rec *r)
 			apr_table_set(r->subprocess_env, "IP2LOCATION_MNC", record->mnc);
 			apr_table_set(r->subprocess_env, "IP2LOCATION_MOBILEBRAND", record->mobilebrand);
 			sprintf(buff, "%f", record->elevation);
-			apr_table_set(r->subprocess_env, "IP2LOCATION_ELEVATION", buff); 
+			apr_table_set(r->subprocess_env, "IP2LOCATION_ELEVATION", buff);
 			apr_table_set(r->subprocess_env, "IP2LOCATION_USAGETYPE", record->usagetype);
 			apr_table_set(r->subprocess_env, "IP2LOCATION_ADDRESSTYPE", record->address_type);
 			apr_table_set(r->subprocess_env, "IP2LOCATION_CATEGORY", record->category);
 			apr_table_set(r->subprocess_env, "IP2LOCATION_DISTRICT", record->district);
 			apr_table_set(r->subprocess_env, "IP2LOCATION_ASN", record->asn);
 			apr_table_set(r->subprocess_env, "IP2LOCATION_AS", record->as);
+			apr_table_set(r->subprocess_env, "IP2LOCATION_AS_DOMAIN", record->as_domain);
+			apr_table_set(r->subprocess_env, "IP2LOCATION_AS_USAGE_TYPE", record->as_usage_type);
+			apr_table_set(r->subprocess_env, "IP2LOCATION_CIDR", record->as_cidr);
 		}
 
 		if (config->setMode & NOTES_SET_MODE) {
 			apr_table_set(r->notes, "IP2LOCATION_IP", ipaddr);
-			apr_table_set(r->notes, "IP2LOCATION_COUNTRY_SHORT", record->country_short); 
-			apr_table_set(r->notes, "IP2LOCATION_COUNTRY_LONG", record->country_long); 
-			apr_table_set(r->notes, "IP2LOCATION_REGION", record->region); 
-			apr_table_set(r->notes, "IP2LOCATION_CITY", record->city); 
-			apr_table_set(r->notes, "IP2LOCATION_ISP", record->isp); 
+			apr_table_set(r->notes, "IP2LOCATION_COUNTRY_SHORT", record->country_short);
+			apr_table_set(r->notes, "IP2LOCATION_COUNTRY_LONG", record->country_long);
+			apr_table_set(r->notes, "IP2LOCATION_REGION", record->region);
+			apr_table_set(r->notes, "IP2LOCATION_CITY", record->city);
+			apr_table_set(r->notes, "IP2LOCATION_ISP", record->isp);
 			sprintf(buff, "%f", record->latitude);
-			apr_table_set(r->notes, "IP2LOCATION_LATITUDE", buff); 
+			apr_table_set(r->notes, "IP2LOCATION_LATITUDE", buff);
 			sprintf(buff, "%f", record->longitude);
-			apr_table_set(r->notes, "IP2LOCATION_LONGITUDE", buff); 
-			apr_table_set(r->notes, "IP2LOCATION_DOMAIN", record->domain); 
-			apr_table_set(r->notes, "IP2LOCATION_ZIPCODE", record->zipcode); 
-			apr_table_set(r->notes, "IP2LOCATION_TIMEZONE", record->timezone); 
+			apr_table_set(r->notes, "IP2LOCATION_LONGITUDE", buff);
+			apr_table_set(r->notes, "IP2LOCATION_DOMAIN", record->domain);
+			apr_table_set(r->notes, "IP2LOCATION_ZIPCODE", record->zipcode);
+			apr_table_set(r->notes, "IP2LOCATION_TIMEZONE", record->timezone);
 			apr_table_set(r->notes, "IP2LOCATION_NETSPEED", record->netspeed);
 			apr_table_set(r->notes, "IP2LOCATION_IDDCODE", record->iddcode);
 			apr_table_set(r->notes, "IP2LOCATION_AREACODE", record->areacode);
@@ -146,47 +149,50 @@ static int ip2location_post_read_request(request_rec *r)
 			apr_table_set(r->notes, "IP2LOCATION_MNC", record->mnc);
 			apr_table_set(r->notes, "IP2LOCATION_MOBILEBRAND", record->mobilebrand);
 			sprintf(buff, "%f", record->elevation);
-			apr_table_set(r->notes, "IP2LOCATION_ELEVATION", buff); 
+			apr_table_set(r->notes, "IP2LOCATION_ELEVATION", buff);
 			apr_table_set(r->notes, "IP2LOCATION_USAGETYPE", record->usagetype);
 			apr_table_set(r->notes, "IP2LOCATION_ADDRESSTYPE", record->address_type);
 			apr_table_set(r->notes, "IP2LOCATION_CATEGORY", record->category);
 			apr_table_set(r->notes, "IP2LOCATION_DISTRICT", record->district);
 			apr_table_set(r->notes, "IP2LOCATION_ASN", record->asn);
 			apr_table_set(r->notes, "IP2LOCATION_AS", record->as);
+			apr_table_set(r->notes, "IP2LOCATION_AS_DOMAIN", record->as_domain);
+			apr_table_set(r->notes, "IP2LOCATION_AS_USAGE_TYPE", record->as_usage_type);
+			apr_table_set(r->notes, "IP2LOCATION_AS_CIDR", record->as_cidr);
 		}
-	
-		IP2Location_free_record(record);		
+
+		IP2Location_free_record(record);
 	}
-	
+
 	return OK;
 }
 
 static const char* set_ip2location_enable(cmd_parms *cmd, void *dummy, int arg)
 {
 	ip2location_server_config* config = (ip2location_server_config*) ap_get_module_config(cmd->server->module_config, &IP2Location_module);
-	
+
 	if (!config) {
 		return NULL;
 	}
-	
+
 	config->enabled = arg;
-	
+
 	return NULL;
 }
 
 static const char* set_ip2location_dbfile(cmd_parms* cmd, void* dummy, const char* dbFile, int arg)
 {
 	ip2location_server_config* config = (ip2location_server_config*) ap_get_module_config(cmd->server->module_config, &IP2Location_module);
-	
+
 	if (!config) {
 		return NULL;
 	}
-		
+
 	config->dbFile = apr_pstrdup(cmd->pool, dbFile);
-	
+
 	if (config->enabled) {
-		config->ip2locObj = IP2Location_open(config->dbFile);	
-		
+		config->ip2locObj = IP2Location_open(config->dbFile);
+
 		if (!config->ip2locObj) {
 			return "Error opening dbFile!";
 		}
@@ -194,17 +200,17 @@ static const char* set_ip2location_dbfile(cmd_parms* cmd, void* dummy, const cha
 		IP2Location_set_lookup_mode(config->ip2locObj, IP2LOCATION_CACHE_MEMORY);
 	}
 
-	return NULL; 
+	return NULL;
 }
 
 static const char* set_ip2location_set_mode(cmd_parms* cmd, void* dummy, const char* mode, int arg)
 {
 	ip2location_server_config* config = (ip2location_server_config*) ap_get_module_config(cmd->server->module_config, &IP2Location_module);
-	
+
 	if (!config) {
 		return NULL;
 	}
-	
+
 	if (strcmp(mode, "ALL") == 0) {
 		config->setMode = ALL_SET_MODE;
 	} else if (strcmp(mode, "ENV") == 0) {
@@ -215,26 +221,26 @@ static const char* set_ip2location_set_mode(cmd_parms* cmd, void* dummy, const c
 		return "Invalid mode for IP2LocationSetMode";
 	}
 
-	return NULL; 
+	return NULL;
 }
 
 static const char* set_ip2location_detect_proxy(cmd_parms *cmd, void *dummy, int arg)
 {
 	ip2location_server_config* config = (ip2location_server_config*) ap_get_module_config(cmd->server->module_config, &IP2Location_module);
-	
+
 	if (!config) {
 		return NULL;
 	}
-	
+
 	config->detectProxy = arg;
-	
+
 	return NULL;
 }
 
 static void* ip2location_create_svr_conf(apr_pool_t* pool, server_rec* svr)
 {
 	ip2location_server_config* svr_cfg = apr_pcalloc(pool, sizeof(ip2location_server_config));
-	
+
 	svr_cfg->enabled = 0;
 	svr_cfg->dbFile = NULL;
 	svr_cfg->setMode = ALL_SET_MODE;
@@ -248,7 +254,7 @@ static const command_rec ip2location_cmds[] = {
 	AP_INIT_TAKE1( "IP2LocationDBFile", (const char *(*)()) set_ip2location_dbfile, NULL, OR_FILEINFO, "File path to DB file"),
 	AP_INIT_TAKE1( "IP2LocationSetMode", (const char *(*)()) set_ip2location_set_mode, NULL, OR_FILEINFO, "Set scope mode"),
 	AP_INIT_TAKE1( "IP2LocationDetectProxy", (const char *(*)()) set_ip2location_detect_proxy, NULL, OR_FILEINFO, "Detect proxy headers"),
-	{NULL} 
+	{NULL}
 };
 
 static void ip2location_register_hooks(apr_pool_t *p)
@@ -262,7 +268,7 @@ static void ip2location_register_hooks(apr_pool_t *p)
 
 // API hooks
 module AP_MODULE_DECLARE_DATA IP2Location_module = {
-	STANDARD20_MODULE_STUFF, 
+	STANDARD20_MODULE_STUFF,
 	NULL,                        /* create per-dir    config structures */
 	NULL,                        /* merge  per-dir    config structures */
 	ip2location_create_svr_conf, /* create per-server config structures */
